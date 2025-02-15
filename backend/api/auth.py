@@ -1,18 +1,20 @@
+from flask import Blueprint, request, jsonify
 from flask_jwt_extended import JWTManager, create_access_token
-from flask import request, jsonify
 from .models import User
 import bcrypt
 
+# Define the Blueprint
+auth = Blueprint("auth", __name__)
 jwt = JWTManager()
 
-@api.route("/auth/register", methods=["POST"])
+@auth.route("/auth/register", methods=["POST"])
 def register():
     data = request.json
     hashed_pw = bcrypt.hashpw(data["password"].encode("utf-8"), bcrypt.gensalt())
     new_user = User(username=data["username"], password_hash=hashed_pw).save()
     return jsonify({"message": "User created successfully"}), 201
 
-@api.route("/auth/login", methods=["POST"])
+@auth.route("/auth/login", methods=["POST"])
 def login():
     data = request.json
     user = User.objects(username=data["username"]).first()
