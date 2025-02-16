@@ -14,6 +14,7 @@ def upload_sensor_data():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @api.route("/sensors/latest", methods=["GET"])
 def get_latest_data():
     data = SensorData.objects.order_by("-timestamp").limit(10)
