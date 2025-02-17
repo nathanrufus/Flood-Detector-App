@@ -14,10 +14,12 @@ def upload_sensor_data():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @api.route("/sensors/latest", methods=["GET"])
 def get_latest_data():
     data = SensorData.objects.order_by("-timestamp").limit(10)
-    return jsonify(data), 200
+    return jsonify(data=[sensor.to_mongo().to_dict() for sensor in data]), 200
+
 
 @api.route("/sensors/<stationID>", methods=["GET"])
 def get_sensor_by_station(stationID):
