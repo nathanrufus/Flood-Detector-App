@@ -7,7 +7,6 @@ from .auth import auth, jwt
 import flask_mongoengine.json
 import os
 from dotenv import load_dotenv
-from bson import ObjectId
 
 load_dotenv()  # Load MongoDB URI from .env file
 
@@ -17,19 +16,9 @@ def disable_json_encoder_patch():
         app.json = DefaultJSONProvider(app)  
     flask_mongoengine.json.override_json_encoder = fake_override_json_encoder
 
-# Custom JSON provider to automatically convert ObjectId values to strings
-class CustomJSONProvider(DefaultJSONProvider):
-    def default(self, obj):
-        if isinstance(obj, ObjectId):
-            return str(obj)
-        return super().default(obj)
-
 def create_app():
     app = Flask(__name__)
     CORS(app)
-
-    # Use the custom JSON provider to handle ObjectId serialization
-    app.json = CustomJSONProvider(app)
 
     disable_json_encoder_patch()
 
