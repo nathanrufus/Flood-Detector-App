@@ -34,14 +34,23 @@ def get_latest_data():
 
     return jsonify(data=[convert_to_json(sensor) for sensor in data]), 200
 
-# @api.route("/sensors/latest", methods=["GET"])
-# def get_latest_data():
-#     data = SensorData.objects.order_by("-timestamp").limit(10)
-#     # Convert each sensor document to a dict and recursively convert ObjectIds
-#     result = [convert_objectids(sensor.to_mongo().to_dict()) for sensor in data]
-#     return jsonify(data=result), 200
+@api.route("/sensors/upload", methods=["POST"])
+def upload_sensor_data():
+    try:
+        data = request.json
+        new_data = SensorData(**data).save()
 
+        # Convert saved data to a JSON serializable format
+        saved_data = new_data.to_mongo().to_dict()
+        saved_data["_id"] = str(saved_data["_id"])  # Convert ObjectId to string
 
+        return jsonify({
+            "message": "Sensor data saved successfully",
+            "data": saved_data
+        }), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 @api.route("/sensors/<stationID>", methods=["GET"])
 def get_sensor_by_station(stationID):
     data = SensorData.objects(stationID=stationID).order_by("-timestamp")
