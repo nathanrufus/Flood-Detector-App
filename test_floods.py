@@ -3,20 +3,20 @@ import random
 
 url2 = "https://flood-detector-app.onrender.com/api/sensors/upload"
 
-data2 = {
-    "stationID": "ST005",
+data2 =  {
+    "stationID": "ST004",
     "location": {
-      "latitude": 48.85,
-      "longitude": 2.35
+      "latitude": 51.51,
+      "longitude": -0.12
     },
-    "waterLevel": 4.8,
-    "turbidity": 11.7,
-    "ph": 6.9
+    "waterLevel": 6.1,
+    "turbidity": 9.1,
+    "ph": 7.2
   }
 
 response = requests.post(url2 , json = data2)
 
-if response.status_code == 200:
+if response.status_code == 201:
     print("Success:" ,  response.json())
 else:
     print(f"Error {response.status_code}: {response.text}")
